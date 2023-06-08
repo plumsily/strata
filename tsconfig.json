@@ -23,6 +23,15 @@
       "@/*": ["./*"]
     }
   },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node",
+    "compilerOptions": {
+      "esModuleInterop": true,
+      "module": "CommonJS", // "module": "CommonJS" should work too
+      "moduleResolution": "Node"
+    }
+  },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
