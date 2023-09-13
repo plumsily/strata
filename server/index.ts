@@ -21,6 +21,11 @@ io.on("connection", (socket: Socket) => {
     // broadcast the modify event to all other clients
     socket.broadcast.emit("modify", data);
   });
+  socket.on("userJoined", (data) => {
+    const { name, userId, roomId } = data;
+    socket.join(roomId);
+    socket.emit("userIsJoined", { success: true });
+  });
 });
 
 httpServer.listen(5000, () => {

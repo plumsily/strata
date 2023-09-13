@@ -1,14 +1,23 @@
+// export default function RoomID({ params }: { params: { slug: string } }) {
+//   return <div>My Post: {params.slug}</div>;
+// }
+
 "use client";
 import { useState, useEffect, useRef } from "react";
 import io, { Socket } from "socket.io-client";
 import * as fabric from "fabric";
 import Whiteboard from "@/components/Whiteboard";
 import { ToolsProvider } from "@/components/context/ToolsProvider";
+import { SocketProvider } from "@/components/context/SocketContext";
 
 let socket: Socket;
 let canvas: fabric.Canvas;
 
-export default function WhiteboardPage() {
+export default function WhiteboardRoom({
+  params,
+}: {
+  params: { slug: string };
+}) {
   // const [roomId, setRoomId] = useState("");
   // const [username, setUsername] = useState("");
 
@@ -60,9 +69,11 @@ export default function WhiteboardPage() {
   // }, []);
 
   return (
+    // <SocketProvider>
     <ToolsProvider>
       <Whiteboard></Whiteboard>
     </ToolsProvider>
+    // </SocketProvider>
     // <div>
     //   {/* <h1>Strata</h1> */}
     //   <canvas id="whiteboard" ref={canvasRef} className="border" />

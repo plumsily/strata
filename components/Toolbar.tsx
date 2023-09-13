@@ -28,6 +28,7 @@ function Toolbar({ canvas }: ToolbarProps) {
   //   const [width, setWidth] = useState(1);
   const {
     setTool,
+    tool,
     colorHex,
     setColorHex,
     colorHistory,
@@ -45,6 +46,11 @@ function Toolbar({ canvas }: ToolbarProps) {
     if (canvas && canvas.freeDrawingBrush) {
       canvas.freeDrawingBrush.color = hex;
       setIsErasing(false);
+    } else if (canvas && canvas.getActiveObject) {
+      const activeObject = canvas.getActiveObject();
+      if (activeObject && activeObject.type === "IText") {
+        activeObject.set({ fill: hex });
+      }
     }
   }
 
@@ -53,6 +59,11 @@ function Toolbar({ canvas }: ToolbarProps) {
       setWidth(newValue);
       if (canvas && canvas.freeDrawingBrush) {
         canvas.freeDrawingBrush.width = newValue;
+      } else if (canvas && canvas.getActiveObject) {
+        const activeObject = canvas.getActiveObject();
+        if (activeObject && activeObject.type === "IText") {
+          activeObject.set({ fontSize: newValue });
+        }
       }
     }
   }
@@ -142,11 +153,13 @@ function Toolbar({ canvas }: ToolbarProps) {
       </div>
       <Radio.Group
         defaultValue="pencil"
+        value={tool}
         buttonStyle="solid"
         onChange={handleToolChange}
       >
         <Radio.Button value="move">Move</Radio.Button>
         <Radio.Button value="pencil">Brush</Radio.Button>
+        <Radio.Button value="text">Text</Radio.Button>
         <Radio.Button value="eraser">Eraser</Radio.Button>
         <Radio.Button value="line">Line</Radio.Button>
         <Radio.Button value="rectangle">Rectangle</Radio.Button>

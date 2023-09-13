@@ -1,71 +1,72 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import io, { Socket } from "socket.io-client";
 import * as fabric from "fabric";
+import Forms from "@/components/Forms/Forms";
 import Whiteboard from "@/components/Whiteboard";
 import { ToolsProvider } from "@/components/context/ToolsProvider";
+import { SocketProvider } from "@/components/context/SocketContext";
+import { useSocket } from "@/components/context/SocketContext";
 
 let socket: Socket;
 let canvas: fabric.Canvas;
 
+export interface ChildProps {
+  uuid: () => string;
+  socket: Socket;
+  setUser: React.Dispatch<React.SetStateAction<object>>;
+}
+
+// const server = "http://localhost:5000";
+// socket = io(server);
+
 export default function Home() {
-  // const [roomId, setRoomId] = useState("");
-  // const [username, setUsername] = useState("");
+  const router = useRouter();
+  const [user, setUser] = useState({});
+  const socket = useSocket();
 
-  // const handleJoinRoom = () => {};
-  // const handleCreateRoom = () => {};
-
-  // const canvasRef = useRef<HTMLCanvasElement>(null);
-  // const socketRef = useRef<Socket>();
-  // const canvas = useRef<fabric.Canvas>();
-
-  // const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    socket.on("userIsJoined", (data) => {
+      if (data.success) {
+        console.log("userJoined");
+      } else {
+        console.log("userJoined error");
+      }
+    });
+  }, []);
 
   // useEffect(() => {
-  //   socket = io("http://localhost:5000"); // Connect to the server
-  //   canvas = new fabric.Canvas(canvasRef.current as HTMLCanvasElement, {
-  //     isDrawingMode: true,
-  //     width: window.innerWidth,
-  //     height: window.innerHeight,
-  //   });
-  //   // Enable drawing mode
-  //   canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-  //   canvas.freeDrawingBrush.color = "black";
-  //   canvas.freeDrawingBrush.width = 1;
-
-  //   // Event handler for path creation
-  //   canvas.on("path:created", (opt: any) => {
-  //     const path = opt.path;
-  //     socket.emit(
-  //       "draw",
-  //       path.toObject(["path", "stroke", "strokeWidth"])
-  //       // path.toObject(["x1", "y1", "x2", "y2", "width", "height"])
-  //     ); // Emit path data
-  //   });
-
-  //   // Event handler for socket draw event
-  //   socket.on("draw", async (data: any) => {
-  //     const path = fabric.Path.fromObject(data);
-  //     canvas.add(await path);
-  //     canvas.renderAll();
-  //   });
-
-  //   // Handle window resize
-  //   window.addEventListener("resize", () => {
-  //     canvas.setDimensions({
-  //       width: window.innerWidth,
-  //       height: window.innerHeight,
-  //     });
-  //   });
+  //   router.push("/whiteboard");
   // }, []);
-
+  const uuid = () => {
+    var S4 = () => {
+      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    };
+    return (
+      S4() +
+      S4() +
+      "-" +
+      S4() +
+      "-" +
+      S4() +
+      "-" +
+      S4() +
+      "-" +
+      S4() +
+      S4() +
+      S4()
+    );
+  };
   return (
-    <ToolsProvider>
-      <Whiteboard></Whiteboard>
-    </ToolsProvider>
-    // <div>
-    //   {/* <h1>Strata</h1> */}
-    //   <canvas id="whiteboard" ref={canvasRef} className="border" />
-    // </div>
+    <>
+      {/* <SocketProvider> */}
+      <Forms uuid={uuid} socket={socket} setUser={setUser} />
+      {/* </SocketProvider> */}
+    </>
   );
+  // <div>
+  //   {/* <h1>Strata</h1> */}
+  //   <canvas id="whiteboard" ref={canvasRef} className="border" />
+  // </div>
 }

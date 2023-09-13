@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { MotionConfig } from "framer-motion";
 import { ToastContainer } from "react-toastify";
 import { RecoilRoot } from "recoil";
+import { SocketProvider } from "@/components/context/SocketContext";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -24,12 +25,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <RecoilRoot>
-          <ToastContainer />
-          <MotionConfig transition={{ ease: DEFAULT_EASE }}>
-            {children}
-          </MotionConfig>
-        </RecoilRoot>
+        <SocketProvider>
+          <RecoilRoot>
+            <ToastContainer />
+            <MotionConfig transition={{ ease: DEFAULT_EASE }}>
+              {children}
+            </MotionConfig>
+          </RecoilRoot>
+        </SocketProvider>
       </body>
     </html>
   );

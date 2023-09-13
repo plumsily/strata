@@ -5,8 +5,9 @@ import * as fabric from "fabric";
 import Toolbar from "./Toolbar";
 import { ToolsContext } from "./context/ToolsProvider";
 import { v4 as uuidv4 } from "uuid";
+import { useSocket } from "./context/SocketContext";
 
-let socket: Socket;
+// let socket: Socket;
 let canvasInstance: fabric.Canvas;
 
 interface FabricObjectWithID extends fabric.BaseFabricObject {
@@ -22,7 +23,10 @@ export default function Whiteboard() {
     fabric.Rect | fabric.Line | null
   >(null);
   //   const [tool, setTool] = useState<string>("pencil");
-  const { tool, colorHex, width } = useContext(ToolsContext);
+  const { setTool, tool, colorHex, width } = useContext(ToolsContext);
+
+  const socket = useSocket();
+
   //   const [dev, setDev] = useState<string>("pending");
 
   // const [roomId, setRoomId] = useState("");
@@ -36,7 +40,7 @@ export default function Whiteboard() {
   // const canvasInstance = useRef<fabric.Canvas>();
 
   useEffect(() => {
-    socket = io("http://localhost:5000"); // Connect to the server
+    // socket = io("http://localhost:5000"); // Connect to the server
     canvasInstance = new fabric.Canvas(canvasRef.current as HTMLCanvasElement, {
       isDrawingMode: true,
       width: window.innerWidth,
@@ -174,6 +178,24 @@ export default function Whiteboard() {
               });
               setDrawingObject(rectangle);
               canvasInstanceCurrent.add(rectangle);
+              break;
+            case "text":
+              const text = new fabric.IText("Edit me", {
+                id: uuidv4(),
+                left: pointer.x,
+                top: pointer.y,
+                fill: colorHex,
+                fontSize: 20,
+                width: 300,
+                editable: true,
+              });
+              canvasInstanceCurrent.add(text);
+              setTool("move");
+              canvasInstanceCurrent.isDrawingMode = false;
+              canvasInstanceCurrent.selection = true;
+              canvasInstanceCurrent.forEachObject(function (object) {
+                object.set("selectable", true);
+              });
               break;
             default:
               break;
