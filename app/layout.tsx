@@ -1,4 +1,3 @@
-"use client";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Space_Grotesk } from "next/font/google";
@@ -6,6 +5,7 @@ import { MotionConfig } from "framer-motion";
 import { ToastContainer } from "react-toastify";
 import { RecoilRoot } from "recoil";
 import { SocketProvider } from "@/components/context/SocketContext";
+import ParentWrapper from "@/components/ParentWrapper";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -27,14 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={spaceGrotesk.className}>
-        <SocketProvider>
-          <RecoilRoot>
-            <ToastContainer />
-            <MotionConfig transition={{ ease: DEFAULT_EASE }}>
-              {children}
-            </MotionConfig>
-          </RecoilRoot>
-        </SocketProvider>
+        <ParentWrapper>{children}</ParentWrapper>
       </body>
     </html>
   );
