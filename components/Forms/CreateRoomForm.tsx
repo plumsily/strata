@@ -4,6 +4,9 @@ import { Button, Form, Input } from "antd";
 import { FC } from "react";
 import { ChildProps } from "@/app/page";
 import { useRouter } from "next/navigation";
+import { Space_Grotesk } from "next/font/google";
+
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
 type FieldType = {
   name?: string;
@@ -11,6 +14,7 @@ type FieldType = {
 const CreateRoomForm: FC<ChildProps> = ({ uuid, socket, setUser }) => {
   const [roomId, setRoomId] = useState(uuid());
   const [name, setName] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const router = useRouter();
 
@@ -36,6 +40,7 @@ const CreateRoomForm: FC<ChildProps> = ({ uuid, socket, setUser }) => {
         rules={[{ required: true, message: "Please input your name!" }]}
       >
         <Input
+          className={spaceGrotesk.className}
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -43,20 +48,33 @@ const CreateRoomForm: FC<ChildProps> = ({ uuid, socket, setUser }) => {
       </Form.Item>
       <Form.Item>
         <div className="flex gap-2">
-          <Input value={roomId} disabled placeholder="Room ID" />
+          <Input
+            className={spaceGrotesk.className}
+            value={roomId}
+            disabled
+            placeholder="Room ID"
+          />
           <Button
-            className="bg-[#1677FF]"
+            className={`bg-[#1677FF] ${spaceGrotesk.className}`}
             type="primary"
             onClick={() => setRoomId(uuid())}
           >
             Generate
           </Button>
-          <Button>Copy</Button>
+          <Button
+            className={`${spaceGrotesk.className}`}
+            onClick={() => {
+              navigator.clipboard.writeText(roomId);
+              setCopied(true);
+            }}
+          >
+            {copied ? "Copied" : "Copy"}
+          </Button>
         </div>
       </Form.Item>
       <Form.Item>
         <Button
-          className="bg-[#1677FF] w-full"
+          className={`bg-[#1677FF] ${spaceGrotesk.className} w-full`}
           type="primary"
           onClick={handleCreateRoom}
         >

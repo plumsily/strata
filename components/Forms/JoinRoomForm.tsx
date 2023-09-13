@@ -2,6 +2,9 @@ import { Button, Form, Input } from "antd";
 import { ChildProps } from "@/app/page";
 import { FC, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Space_Grotesk } from "next/font/google";
+
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
 type FieldType = {
   name?: string;
@@ -34,17 +37,22 @@ const JoinRoomForm: FC<ChildProps> = ({ uuid, socket, setUser }) => {
       <Form.Item<FieldType>
         rules={[{ required: true, message: "Please input your name!" }]}
       >
-        <Input placeholder="Name" onChange={(e) => setName(e.target.value)} />{" "}
+        <Input
+          className={spaceGrotesk.className}
+          placeholder="Name"
+          onChange={(e) => setName(e.target.value)}
+        />{" "}
       </Form.Item>
       <Form.Item>
         <Input
+          className={spaceGrotesk.className}
           placeholder="Room ID"
           onChange={(e) => setRoomId(e.target.value)}
         />
       </Form.Item>
       <Form.Item>
         <Button
-          className="bg-white w-full text-[#1677FF]"
+          className={`bg-white text-[#1677FF] ${spaceGrotesk.className} w-full`}
           type="primary"
           onClick={handleJoinRoom}
         >

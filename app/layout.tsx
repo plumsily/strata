@@ -1,6 +1,7 @@
 "use client";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import { MotionConfig } from "framer-motion";
 import { ToastContainer } from "react-toastify";
 import { RecoilRoot } from "recoil";
@@ -11,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { DEFAULT_EASE } from "@/lib/constants";
 
 const inter = Inter({ subsets: ["latin"] });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Strata | Collaborative Whiteboard",
@@ -24,7 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={spaceGrotesk.className}>
         <SocketProvider>
           <RecoilRoot>
             <ToastContainer />
