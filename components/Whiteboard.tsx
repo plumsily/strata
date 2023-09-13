@@ -22,6 +22,7 @@ export default function Whiteboard() {
   const [drawingObject, setDrawingObject] = useState<
     fabric.Rect | fabric.Line | null
   >(null);
+  const [textObject, setTextObject] = useState<fabric.IText | null>(null);
   //   const [tool, setTool] = useState<string>("pencil");
   const { setTool, tool, colorHex, width } = useContext(ToolsContext);
 
@@ -91,22 +92,20 @@ export default function Whiteboard() {
           console.error("Error in enlivenObjects: ", error);
         });
     });
-    // socket.on("draw", async (data: any) => {
-    //   fabric.Object.fromObject<any>(data)
-    //     .then((deserializedObj) => {
-    //       if (deserializedObj) {
-    //         deserializedObj.id = data.id; // Make sure the original ID is set
-    //         const origRenderOnAddRemove = canvasInstance.renderOnAddRemove;
-    //         canvasInstance.renderOnAddRemove = false;
-    //         canvasInstance.add(deserializedObj as fabric.BaseFabricObject);
-    //         canvasInstance.renderOnAddRemove = origRenderOnAddRemove;
-    //         canvasInstance.renderAll();
-    //       }
-    //     })
-    //     .catch((error: Error) => {
-    //       console.error("Error in fromObject: ", error);
-    //     });
-    // });
+
+    socket.on("text", async (data: any) => {
+      fabric.IText.fromObject(data)
+        .then((deserializedObj) => {
+          if (deserializedObj) {
+            // deserializedObj.id = data.id;
+            canvasInstance.add(deserializedObj);
+            canvasInstance.renderAll();
+          }
+        })
+        .catch((error: Error) => {
+          console.error("Error in fromObject: ", error);
+        });
+    });
 
     socket.on("modify", async (data: any) => {
       const id = data.id;
@@ -233,8 +232,15 @@ export default function Whiteboard() {
         if (!canvasInstanceCurrent.isDrawingMode && drawingObject) {
           //   canvasInstanceCurrent.add(drawingObject);
           //   setDrawingObject(null);
-          if (tool === "line" || tool === "rectangle") {
-            socket.emit("draw", drawingObject.toObject());
+          if (drawingObject) {
+            if (tool === "line" || tool === "rectangle") {
+              socket.emit("draw", drawingObject.toObject());
+            }
+          }
+          if (textObject) {
+            if (tool === "text") {
+              socket.emit("text", textObject.toObject());
+            }
           }
           setDrawingObject(null);
         }
