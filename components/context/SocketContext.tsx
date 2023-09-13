@@ -12,7 +12,7 @@ interface SocketContextProps {
   socket: Socket;
 }
 
-export const newSocket = io("http://localhost:5000");
+export const newSocket = io("https://strata-server.adaptable.app/");
 
 const SocketContext = createContext<Socket>(newSocket);
 
@@ -20,7 +20,7 @@ export const useSocket = () => {
   return useContext(SocketContext);
 };
 
-const server = "http://localhost:5000";
+const server = "https://strata-server.adaptable.app/";
 
 export const SocketProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [socket, setSocket] = useState<Socket>(newSocket);
